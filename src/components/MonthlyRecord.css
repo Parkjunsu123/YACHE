@@ -1,0 +1,153 @@
+.monthly-record-container {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.monthly-record-header {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.monthly-record-header h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.monthly-record-body {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 400px;
+}
+
+.no-records {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: #999;
+}
+
+.no-records p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.monthly-stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: #fafafa;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.stat-item:hover {
+  background-color: #f5f5f5;
+  border-color: #ccc;
+  transform: translateX(2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stat-item:active {
+  transform: translateX(1px);
+}
+
+.stat-rank {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #333;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-right: 0.75rem;
+}
+
+.stat-item:nth-child(1) .stat-rank {
+  background-color: #ffd700;
+  color: #333;
+}
+
+.stat-item:nth-child(2) .stat-rank {
+  background-color: #c0c0c0;
+  color: #333;
+}
+
+.stat-item:nth-child(3) .stat-rank {
+  background-color: #cd7f32;
+  color: #fff;
+}
+
+.stat-project {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.stat-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.stat-count {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  padding: 0.5rem 1rem;
+  background-color: #fff;
+  border-radius: 6px;
+  border: 2px solid #e0e0e0;
+  flex-shrink: 0;
+}
+
+.count-number {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.count-label {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .stat-rank {
+    width: 26px;
+    height: 26px;
+    font-size: 0.75rem;
+  }
+
+  .stat-name {
+    font-size: 0.9rem;
+  }
+
+  .count-number {
+    font-size: 1.1rem;
+  }
+}
+

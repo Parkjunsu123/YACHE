@@ -1,0 +1,60 @@
+.daily-check {
+  width: 100%;
+  padding: 2rem;
+  height: calc(100vh - 80px);
+  overflow: hidden;
+}
+
+.daily-check-layout {
+  display: flex;
+  gap: 2rem;
+  height: 100%;
+  padding-left: 3rem;
+}
+
+.daily-check-left {
+  width: 60%;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+
+.daily-check-right {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* 큰 데스크탑 (1600px 이상) */
+@media (min-width: 1600px) {
+  .daily-check {
+    padding: 3rem;
+  }
+
+  .daily-check-layout {
+    gap: 3rem;
+    padding-left: 4rem;
+  }
+}
+
+/* 중간 데스크탑 (1200px ~ 1600px) */
+@media (min-width: 1200px) and (max-width: 1599px) {
+  .daily-check {
+    padding: 2rem;
+  }
+
+  .daily-check-layout {
+    gap: 2rem;
+    padding-left: 3rem;
+  }
+}
+
+/* 작은 데스크탑 (1024px ~ 1199px) */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .daily-check {
+    padding: 1.5rem;
+  }
+
+  .daily-check-layout {
+    gap: 1.5rem;
+    padding-left: 2rem;
+  }
+}
