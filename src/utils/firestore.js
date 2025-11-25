@@ -149,6 +149,9 @@ export const addPostingAnalysisToFirestore = async (data) => {
       throw new Error('Firebase가 초기화되지 않았습니다. 환경 변수를 확인해주세요.');
     }
 
+    // 저장 전에 3일 지난 데이터 삭제
+    await deleteOldPostingAnalyses();
+
     const docRef = await addDoc(collection(db, 'postingAnalyses'), {
       projectName: data.projectName,
       rows: data.rows,
@@ -163,6 +166,42 @@ export const addPostingAnalysisToFirestore = async (data) => {
   } catch (error) {
     console.error('❌ 포스팅 분석 결과 Firestore 저장 실패:', error);
     throw error;
+  }
+};
+
+/**
+ * 3일 지난 포스팅 분석 결과 삭제
+ * @returns {Promise<void>}
+ */
+const deleteOldPostingAnalyses = async () => {
+  try {
+    if (!db) {
+      return;
+    }
+
+    const threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+    const threeDaysAgoTimestamp = Timestamp.fromDate(threeDaysAgo);
+
+    const q = query(
+      collection(db, 'postingAnalyses'),
+      where('createdAt', '<', threeDaysAgoTimestamp)
+    );
+
+    const querySnapshot = await getDocs(q);
+    const deletePromises = [];
+
+    querySnapshot.forEach((docSnap) => {
+      deletePromises.push(deleteDoc(docSnap.ref));
+    });
+
+    if (deletePromises.length > 0) {
+      await Promise.all(deletePromises);
+      console.log(`🗑️ 3일 지난 포스팅 분석 결과 ${deletePromises.length}개 삭제 완료`);
+    }
+  } catch (error) {
+    console.error('❌ 오래된 포스팅 분석 결과 삭제 실패:', error);
+    // 삭제 실패해도 저장은 계속 진행
   }
 };
 
@@ -183,14 +222,39 @@ export const getPostingAnalysesFromFirestore = async () => {
 
     const querySnapshot = await getDocs(q);
     const items = [];
+    const now = new Date();
+    const threeDaysAgo = new Date(now);
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+    const expiredIds = [];
 
     querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const createdAt = data.createdAt?.toDate();
+      
+      // 3일 지난 데이터 체크
+      if (createdAt && createdAt < threeDaysAgo) {
+        expiredIds.push(doc.id);
+        return; // 3일 지난 항목은 추가하지 않음
+      }
+
       items.push({
         id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate()?.toISOString() || new Date().toISOString()
+        ...data,
+        createdAt: createdAt?.toISOString() || new Date().toISOString()
       });
     });
+
+    // 3일 지난 항목 삭제
+    if (expiredIds.length > 0) {
+      console.log('🗑️ 3일 지난 포스팅 분석 결과 삭제:', expiredIds.length, '개');
+      for (const id of expiredIds) {
+        try {
+          await deleteDoc(doc(db, 'postingAnalyses', id));
+        } catch (error) {
+          console.error(`3일 지난 항목 삭제 실패 (${id}):`, error);
+        }
+      }
+    }
 
     console.log('✅ Firestore에서 포스팅 분석 결과 조회 완료:', items.length, '개');
     return items;

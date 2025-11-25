@@ -13,9 +13,11 @@ function PostingCheck() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isLoadModalOpen, setIsLoadModalOpen] = useState(false);
+  const [isLoadedFromFirebase, setIsLoadedFromFirebase] = useState(false);
 
   // 좋아요 상태 로드
   const handleAnalyze = () => {
+    setIsLoadedFromFirebase(false); // 직접 분석한 경우는 불러온 데이터가 아님
     try {
       setError('');
       const parsed = JSON.parse(jsonInput);
@@ -154,10 +156,12 @@ function PostingCheck() {
     setOriginalData(null);
     setSearchQuery('');
     setError('');
+    setIsLoadedFromFirebase(false); // 초기화 시 불러온 데이터 상태도 초기화
   };
 
   // Firebase에서 불러온 데이터를 분석 결과에 적용
   const handleLoadAnalysis = (analysis) => {
+    setIsLoadedFromFirebase(true); // Firebase에서 불러온 데이터로 표시
     try {
       // 원본 JSON이 있으면 그것을 사용, 없으면 rows로부터 재구성
       if (analysis.originalJson) {
@@ -293,12 +297,14 @@ function PostingCheck() {
                   onChange={(e) => handleSearch(e.target.value)}
                 />
               </div>
-              <button 
-                className="save-btn" 
-                onClick={() => setIsSaveModalOpen(true)}
-              >
-                저장하기
-              </button>
+              {!isLoadedFromFirebase && (
+                <button 
+                  className="save-btn" 
+                  onClick={() => setIsSaveModalOpen(true)}
+                >
+                  저장하기
+                </button>
+              )}
             </div>
           </div>
           <div className="table-container">
